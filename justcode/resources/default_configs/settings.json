@@ -1,0 +1,29 @@
+{
+  "editor": {
+    "font_family": "Monospace",
+    "font_size": 12,
+    "tab_width": 4,
+    "use_spaces": true,
+    "word_wrap": false,
+    "line_numbers": true,
+    "highlight_current_line": false,
+    "auto_indent": true
+  },
+  "ui": {
+    "theme": "chuck",
+    "show_status_bar": true,
+    "panel_animation_duration_ms": 250,
+    "enable_panel_animations": true,
+    "hover_edge_threshold_px": 5
+  },
+  "behavior": {
+    "remember_open_files": true
+  },
+  "file_browser": {
+    "font_size": 11,
+    "default_directory": "/home/chuck/Dropbox/Programming/Languages_and_Code/Python/Word Path Finder",
+    "bookmarks": [
+      "/home/chuck/Dropbox/Programming/Languages_and_Code/Python/Word Path Finder"
+    ]
+  }
+}

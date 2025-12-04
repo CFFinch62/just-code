@@ -1,0 +1,4 @@
+Please review all the markdown documents in the root folder of this project in order to:
+ - understand its purpose
+ - ascertain it's current status 
+Then please proceed with active development based upon that information.

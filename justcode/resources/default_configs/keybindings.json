@@ -1,0 +1,27 @@
+{
+    "_comment": "Keyboard shortcuts for Just Code Editor. Restart or save to apply changes.",
+
+    "file.new": "Ctrl+N",
+    "file.open": "Ctrl+O",
+    "file.open_folder": "Ctrl+Shift+O",
+    "file.save": "Ctrl+S",
+    "file.save_as": "Ctrl+Shift+S",
+    "file.close": "Ctrl+W",
+    "file.exit": "Ctrl+Q",
+
+    "edit.undo": "Ctrl+Z",
+    "edit.redo": "Ctrl+Shift+Z",
+    "edit.cut": "Ctrl+X",
+    "edit.copy": "Ctrl+C",
+    "edit.paste": "Ctrl+V",
+
+    "run.run_file": "F5",
+
+    "view.toggle_file_browser": "Ctrl+B",
+    "view.toggle_terminal": "Ctrl+`",
+    "view.toggle_markdown_preview": "Ctrl+Shift+M",
+    "view.zoom_in": "Ctrl++",
+    "view.zoom_out": "Ctrl+-",
+
+    "settings.open": "Ctrl+,"
+}

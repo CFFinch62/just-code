@@ -1,0 +1,6 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+    <rect width="128" height="128" rx="24" fill="#e6a855"/>
+    <text x="64" y="74" text-anchor="middle" font-family="monospace" font-size="38" font-weight="500" fill="#1a1a1a">
+        <tspan fill="#2563eb">{</tspan>)(<tspan fill="#2563eb">}</tspan>
+    </text>
+</svg>

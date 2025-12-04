@@ -1,0 +1,95 @@
+{
+    "_comment": "Curated UI themes - 10 distinct options",
+    "themes": {
+        "default-dark": {
+            "background": "#1e1e1e",
+            "foreground": "#d4d4d4",
+            "selection": "#264f78",
+            "cursor": "#ffffff",
+            "line_highlight": "#2a2a2a",
+            "panel_background": "#252526",
+            "panel_border": "#3c3c3c"
+        },
+        "default-light": {
+            "background": "#ffffff",
+            "foreground": "#000000",
+            "selection": "#add6ff",
+            "cursor": "#000000",
+            "line_highlight": "#f0f0f0",
+            "panel_background": "#f3f3f3",
+            "panel_border": "#cccccc"
+        },
+        "chuck": {
+            "background": "#0c0c2e",
+            "foreground": "#0adb07",
+            "selection": "#d6d6c9",
+            "cursor": "#ffffff",
+            "line_highlight": "#f5e10a",
+            "panel_background": "#0c0c2e",
+            "panel_border": "#414339"
+        },
+        "monokai": {
+            "background": "#272822",
+            "foreground": "#f8f8f2",
+            "selection": "#49483e",
+            "cursor": "#f8f8f0",
+            "line_highlight": "#3e3d32",
+            "panel_background": "#1e1f1c",
+            "panel_border": "#414339"
+        },
+        "dracula": {
+            "background": "#282a36",
+            "foreground": "#f8f8f2",
+            "selection": "#44475a",
+            "cursor": "#f8f8f2",
+            "line_highlight": "#44475a",
+            "panel_background": "#21222c",
+            "panel_border": "#6272a4"
+        },
+        "nord": {
+            "background": "#2e3440",
+            "foreground": "#d8dee9",
+            "selection": "#434c5e",
+            "cursor": "#d8dee9",
+            "line_highlight": "#3b4252",
+            "panel_background": "#242933",
+            "panel_border": "#4c566a"
+        },
+        "solarized-light": {
+            "background": "#fdf6e3",
+            "foreground": "#657b83",
+            "selection": "#eee8d5",
+            "cursor": "#657b83",
+            "line_highlight": "#eee8d5",
+            "panel_background": "#eee8d5",
+            "panel_border": "#93a1a1"
+        },
+        "gruvbox-dark": {
+            "background": "#282828",
+            "foreground": "#ebdbb2",
+            "selection": "#504945",
+            "cursor": "#ebdbb2",
+            "line_highlight": "#3c3836",
+            "panel_background": "#1d2021",
+            "panel_border": "#504945"
+        },
+        "tokyo-night": {
+            "background": "#1a1b26",
+            "foreground": "#a9b1d6",
+            "selection": "#33467c",
+            "cursor": "#c0caf5",
+            "line_highlight": "#292e42",
+            "panel_background": "#16161e",
+            "panel_border": "#414868"
+        },
+        "catppuccin-mocha": {
+            "background": "#1e1e2e",
+            "foreground": "#cdd6f4",
+            "selection": "#45475a",
+            "cursor": "#f5e0dc",
+            "line_highlight": "#313244",
+            "panel_background": "#181825",
+            "panel_border": "#45475a"
+        }
+    }
+}

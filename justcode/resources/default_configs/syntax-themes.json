@@ -1,0 +1,86 @@
+{
+    "_comment": "Curated syntax themes - pair with matching UI theme",
+    "themes": {
+        "default": {
+            "keyword": "#569cd6",
+            "string": "#ce9178",
+            "number": "#b5cea8",
+            "comment": "#6a9955",
+            "function": "#dcdcaa",
+            "class": "#4ec9b0",
+            "operator": "#d4d4d4"
+        },
+        "light": {
+            "keyword": "#0000ff",
+            "string": "#a31515",
+            "number": "#098658",
+            "comment": "#008000",
+            "function": "#795e26",
+            "class": "#267f99",
+            "operator": "#000000"
+        },
+        "monokai": {
+            "keyword": "#f92672",
+            "string": "#e6db74",
+            "number": "#ae81ff",
+            "comment": "#75715e",
+            "function": "#a6e22e",
+            "class": "#66d9ef",
+            "operator": "#f8f8f2"
+        },
+        "dracula": {
+            "keyword": "#ff79c6",
+            "string": "#f1fa8c",
+            "number": "#bd93f9",
+            "comment": "#6272a4",
+            "function": "#50fa7b",
+            "class": "#8be9fd",
+            "operator": "#f8f8f2"
+        },
+        "nord": {
+            "keyword": "#81a1c1",
+            "string": "#a3be8c",
+            "number": "#b48ead",
+            "comment": "#616e88",
+            "function": "#88c0d0",
+            "class": "#8fbcbb",
+            "operator": "#d8dee9"
+        },
+        "solarized": {
+            "keyword": "#859900",
+            "string": "#2aa198",
+            "number": "#d33682",
+            "comment": "#586e75",
+            "function": "#268bd2",
+            "class": "#b58900",
+            "operator": "#839496"
+        },
+        "gruvbox": {
+            "keyword": "#fb4934",
+            "string": "#b8bb26",
+            "number": "#d3869b",
+            "comment": "#928374",
+            "function": "#fabd2f",
+            "class": "#8ec07c",
+            "operator": "#ebdbb2"
+        },
+        "tokyo-night": {
+            "keyword": "#bb9af7",
+            "string": "#9ece6a",
+            "number": "#ff9e64",
+            "comment": "#565f89",
+            "function": "#7aa2f7",
+            "class": "#2ac3de",
+            "operator": "#89ddff"
+        },
+        "catppuccin": {
+            "keyword": "#cba6f7",
+            "string": "#a6e3a1",
+            "number": "#fab387",
+            "comment": "#6c7086",
+            "function": "#89b4fa",
+            "class": "#94e2d5",
+            "operator": "#cdd6f4"
+        }
+    }
+}
