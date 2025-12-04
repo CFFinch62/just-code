@@ -96,7 +96,9 @@ python justcode/main.py
 
 ## License
 
-*To be determined*
+MIT License
+
+Copyright (c) 2025 Chuck Finch - Fragillidae Software
 
 ## Documentation
 
