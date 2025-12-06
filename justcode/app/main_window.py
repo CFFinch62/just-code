@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Optional
 
 from PyQt6.QtWidgets import (
-    QMainWindow, QFileDialog, QMessageBox, QStatusBar, QFontDialog, QDockWidget, QWidget
+    QMainWindow, QFileDialog, QMessageBox, QStatusBar, QFontDialog, QDockWidget, QWidget, QLabel
 )
 from PyQt6.QtGui import QAction, QFont, QIcon
 from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QRect, QTimer, QEvent, QFileSystemWatcher
@@ -52,6 +52,8 @@ class MainWindow(QMainWindow):
         self.tab_editor.current_file_changed.connect(self._on_current_file_changed)
         self.tab_editor.file_modified_changed.connect(self._on_file_modified_changed)
         self.tab_editor.file_saved.connect(self._on_file_saved)
+        self.tab_editor.cursor_position_changed.connect(self._on_cursor_position_changed)
+        self.tab_editor.file_info_changed.connect(self._on_file_info_changed)
         self.setCentralWidget(self.tab_editor)
 
         # Alias for compatibility (some methods still use self.editor)
@@ -236,10 +238,35 @@ class MainWindow(QMainWindow):
         if icon_path:
             self.setWindowIcon(QIcon(str(icon_path)))
 
-        # Status bar (minimal)
+        # Status bar with file information
         if self.settings and self.settings.ui.show_status_bar:
             self.status_bar = QStatusBar()
             self.setStatusBar(self.status_bar)
+
+            # Create permanent status bar widgets (right side)
+            # Style for status bar labels
+            label_style = "padding: 0 8px; color: #999999;"
+
+            # Cursor position (Ln X, Col Y)
+            self._status_cursor = QLabel("Ln 1, Col 1")
+            self._status_cursor.setStyleSheet(label_style)
+            self.status_bar.addPermanentWidget(self._status_cursor)
+
+            # File type / language
+            self._status_filetype = QLabel("Plain Text")
+            self._status_filetype.setStyleSheet(label_style)
+            self.status_bar.addPermanentWidget(self._status_filetype)
+
+            # File encoding
+            self._status_encoding = QLabel("UTF-8")
+            self._status_encoding.setStyleSheet(label_style)
+            self.status_bar.addPermanentWidget(self._status_encoding)
+
+            # Line endings
+            self._status_eol = QLabel("LF")
+            self._status_eol.setStyleSheet(label_style)
+            self.status_bar.addPermanentWidget(self._status_eol)
+
             self.status_bar.showMessage("Ready")
 
     def _create_menus(self):
@@ -849,6 +876,21 @@ class MainWindow(QMainWindow):
             'language': language
         }
         self.plugin_manager.on_file_save(file_path, language, context)
+
+    def _on_cursor_position_changed(self, line: int, col: int):
+        """Handle cursor position changed - update status bar."""
+        if hasattr(self, '_status_cursor'):
+            # Display 1-based line and column numbers
+            self._status_cursor.setText(f"Ln {line + 1}, Col {col + 1}")
+
+    def _on_file_info_changed(self, file_type: str, encoding: str, line_ending: str):
+        """Handle file info changed - update status bar."""
+        if hasattr(self, '_status_filetype'):
+            self._status_filetype.setText(file_type)
+        if hasattr(self, '_status_encoding'):
+            self._status_encoding.setText(encoding)
+        if hasattr(self, '_status_eol'):
+            self._status_eol.setText(line_ending)
 
     # Edit menu handlers (delegate to current editor)
 

@@ -20,22 +20,27 @@ class TabEditorWidget(QTabWidget):
     current_file_changed = pyqtSignal(object)  # Path or None
     file_modified_changed = pyqtSignal(bool)   # Modified state changed
     file_saved = pyqtSignal(object)            # Path of saved file
-    
+    cursor_position_changed = pyqtSignal(int, int)  # line, column (0-based)
+    file_info_changed = pyqtSignal(str, str, str)   # file_type, encoding, line_ending
+
     def __init__(self, parent=None):
         """Initialize the tab widget."""
         super().__init__(parent)
-        
+
         # Track files by path -> tab index
         self._file_tabs: Dict[Path, int] = {}
-        
+
+        # Track file metadata (encoding, line endings) per tab index
+        self._file_metadata: Dict[int, Dict[str, str]] = {}
+
         # Settings reference
         self._settings: Optional[EditorSettings] = None
         self._syntax_theme: Optional[Dict] = None
         self._ui_theme: Optional[Dict] = None
-        
+
         self._setup_ui()
         self._connect_signals()
-        
+
         # Create initial untitled tab
         self._create_untitled_tab()
     
@@ -87,6 +92,7 @@ class TabEditorWidget(QTabWidget):
         """Create a new untitled tab."""
         editor = EditorWidget(self)
         editor.modificationChanged.connect(self._on_modification_changed)
+        editor.cursorPositionChanged.connect(self._on_cursor_position_changed)
 
         if self._settings:
             editor.apply_settings(self._settings)
@@ -96,9 +102,28 @@ class TabEditorWidget(QTabWidget):
             editor.apply_ui_theme(self._ui_theme)
 
         index = self.addTab(editor, "untitled")
+
+        # Set default metadata for untitled files
+        self._file_metadata[index] = {
+            'file_type': 'Plain Text',
+            'encoding': 'UTF-8',
+            'line_ending': 'LF'
+        }
+
         self.setCurrentIndex(index)
         return editor
-    
+
+    def _on_cursor_position_changed(self, line: int, col: int):
+        """Handle cursor position change in any editor."""
+        # Only emit if the sender is the current editor
+        sender = self.sender()
+        current = self.current_editor()
+        # For MarkdownEditorWidget, compare the underlying editor
+        if hasattr(current, '_editor'):
+            current = current._editor
+        if sender == current:
+            self.cursor_position_changed.emit(line, col)
+
     def _on_tab_changed(self, index: int):
         """Handle tab change."""
         if index >= 0:
@@ -109,28 +134,131 @@ class TabEditorWidget(QTabWidget):
                     file_path = path
                     break
             self.current_file_changed.emit(file_path)
+
+            # Emit file info for the new tab
+            self._emit_current_file_info()
+
+            # Emit current cursor position
+            editor = self.current_editor()
+            if editor:
+                line, col = editor.getCursorPosition()
+                self.cursor_position_changed.emit(line, col)
     
     def _on_modification_changed(self, modified: bool):
         """Handle editor modification state change."""
         editor = self.sender()
         if not editor:
             return
-        
+
         index = self.indexOf(editor)
         if index < 0:
             return
-        
+
         # Update tab title with modified indicator
         title = self.tabText(index)
         if modified and not title.endswith(" •"):
             self.setTabText(index, title + " •")
         elif not modified and title.endswith(" •"):
             self.setTabText(index, title[:-2])
-        
+
         # Emit signal if this is the current tab
         if index == self.currentIndex():
             self.file_modified_changed.emit(modified)
-    
+
+    def _emit_current_file_info(self):
+        """Emit file info signal for the current tab."""
+        index = self.currentIndex()
+        if index >= 0 and index in self._file_metadata:
+            meta = self._file_metadata[index]
+            self.file_info_changed.emit(
+                meta.get('file_type', 'Plain Text'),
+                meta.get('encoding', 'UTF-8'),
+                meta.get('line_ending', 'LF')
+            )
+        else:
+            # Default for unknown tabs
+            self.file_info_changed.emit('Plain Text', 'UTF-8', 'LF')
+
+    def _detect_file_type(self, file_path: Path) -> str:
+        """Detect file type/language from file extension."""
+        ext = file_path.suffix.lower()
+        filename = file_path.name.lower()
+
+        # Map extensions to display names
+        type_map = {
+            '.py': 'Python', '.pyw': 'Python',
+            '.js': 'JavaScript', '.mjs': 'JavaScript', '.cjs': 'JavaScript',
+            '.ts': 'TypeScript', '.tsx': 'TypeScript',
+            '.jsx': 'JSX',
+            '.rb': 'Ruby', '.rake': 'Ruby', '.gemspec': 'Ruby',
+            '.c': 'C', '.h': 'C',
+            '.cpp': 'C++', '.cc': 'C++', '.cxx': 'C++', '.hpp': 'C++', '.hh': 'C++', '.hxx': 'C++',
+            '.cs': 'C#',
+            '.java': 'Java',
+            '.go': 'Go',
+            '.rs': 'Rust',
+            '.sh': 'Shell', '.bash': 'Bash', '.zsh': 'Zsh',
+            '.css': 'CSS', '.scss': 'SCSS', '.sass': 'Sass', '.less': 'Less',
+            '.html': 'HTML', '.htm': 'HTML', '.xhtml': 'XHTML',
+            '.xml': 'XML', '.svg': 'SVG', '.xsl': 'XSL',
+            '.json': 'JSON', '.jsonc': 'JSON',
+            '.sql': 'SQL',
+            '.yaml': 'YAML', '.yml': 'YAML',
+            '.lua': 'Lua',
+            '.pl': 'Perl', '.pm': 'Perl',
+            '.php': 'PHP', '.phtml': 'PHP',
+            '.md': 'Markdown', '.markdown': 'Markdown',
+            '.txt': 'Plain Text',
+            '.toml': 'TOML',
+            '.ini': 'INI', '.cfg': 'Config',
+            '.mk': 'Makefile',
+        }
+
+        # Check for special filenames
+        if filename in ['makefile', 'gnumakefile']:
+            return 'Makefile'
+        if filename in ['dockerfile']:
+            return 'Dockerfile'
+        if filename in ['.gitignore', '.dockerignore']:
+            return 'Ignore File'
+
+        return type_map.get(ext, 'Plain Text')
+
+    def _detect_encoding(self, raw_bytes: bytes) -> str:
+        """Detect file encoding from raw bytes."""
+        # Check for BOM markers
+        if raw_bytes.startswith(b'\xef\xbb\xbf'):
+            return 'UTF-8 BOM'
+        if raw_bytes.startswith(b'\xff\xfe'):
+            return 'UTF-16 LE'
+        if raw_bytes.startswith(b'\xfe\xff'):
+            return 'UTF-16 BE'
+
+        # Try to decode as UTF-8
+        try:
+            raw_bytes.decode('utf-8')
+            return 'UTF-8'
+        except UnicodeDecodeError:
+            pass
+
+        # Try Latin-1 (always succeeds, but may not be correct)
+        try:
+            raw_bytes.decode('latin-1')
+            return 'Latin-1'
+        except:
+            pass
+
+        return 'Binary'
+
+    def _detect_line_ending(self, content: str) -> str:
+        """Detect line ending type from file content."""
+        if '\r\n' in content:
+            return 'CRLF'
+        elif '\r' in content:
+            return 'CR'
+        else:
+            return 'LF'
+
     def _get_tab_title(self, file_path: Path) -> str:
         """Get display title for a tab."""
         return file_path.name
@@ -170,6 +298,17 @@ class TabEditorWidget(QTabWidget):
             # Skip the removed tab
         self._file_tabs = updated
 
+    def _update_file_metadata_after_removal(self, removed_index: int):
+        """Update _file_metadata indices after a tab is removed."""
+        updated = {}
+        for index, metadata in self._file_metadata.items():
+            if index > removed_index:
+                updated[index - 1] = metadata
+            elif index < removed_index:
+                updated[index] = metadata
+            # Skip the removed tab
+        self._file_metadata = updated
+
     def open_file(self, file_path: Path) -> bool:
         """
         Open a file in a new tab or switch to existing tab.
@@ -183,9 +322,23 @@ class TabEditorWidget(QTabWidget):
             self.setCurrentIndex(self._file_tabs[file_path])
             return True
 
-        # Try to read the file
+        # Try to read the file (first as raw bytes for encoding detection)
         try:
-            content = file_path.read_text(encoding='utf-8')
+            raw_bytes = file_path.read_bytes()
+            encoding = self._detect_encoding(raw_bytes)
+
+            # Decode content
+            if encoding.startswith('UTF-16'):
+                content = raw_bytes.decode('utf-16')
+            elif encoding == 'Latin-1':
+                content = raw_bytes.decode('latin-1')
+            else:
+                # UTF-8 or UTF-8 BOM
+                content = raw_bytes.decode('utf-8-sig')  # Handles BOM
+
+            # Detect line endings before normalization
+            line_ending = self._detect_line_ending(content)
+
         except Exception as e:
             QMessageBox.critical(
                 self, "Error",
@@ -220,6 +373,11 @@ class TabEditorWidget(QTabWidget):
                 editor = EditorWidget(self)
 
             editor.modificationChanged.connect(self._on_modification_changed)
+            # Connect cursor position signal
+            if isinstance(editor, MarkdownEditorWidget):
+                editor._editor.cursorPositionChanged.connect(self._on_cursor_position_changed)
+            else:
+                editor.cursorPositionChanged.connect(self._on_cursor_position_changed)
 
             if self._settings:
                 editor.apply_settings(self._settings)
@@ -237,6 +395,13 @@ class TabEditorWidget(QTabWidget):
         # Set up syntax highlighting based on extension (skip for markdown - already done)
         if not is_markdown:
             self._setup_syntax_for_file(editor, file_path)
+
+        # Store file metadata
+        self._file_metadata[index] = {
+            'file_type': self._detect_file_type(file_path),
+            'encoding': encoding,
+            'line_ending': line_ending
+        }
 
         # Update tracking
         self._file_tabs[file_path] = index
@@ -626,9 +791,17 @@ class TabEditorWidget(QTabWidget):
                     del self._file_tabs[path]
                     break
 
+            # Reset metadata to defaults
+            self._file_metadata[index] = {
+                'file_type': 'Plain Text',
+                'encoding': 'UTF-8',
+                'line_ending': 'LF'
+            }
+
             self.setTabText(index, "untitled")
             self.setTabToolTip(index, "")
             self.current_file_changed.emit(None)
+            self._emit_current_file_info()
             return True
 
         editor = self.widget(index)
@@ -642,8 +815,13 @@ class TabEditorWidget(QTabWidget):
                 del self._file_tabs[path]
                 break
 
+        # Remove metadata for this tab
+        if index in self._file_metadata:
+            del self._file_metadata[index]
+
         self.removeTab(index)
         self._update_file_tabs_after_removal(index)
+        self._update_file_metadata_after_removal(index)
         return True
 
     def _prompt_save(self, index: int) -> bool:
