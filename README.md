@@ -2,6 +2,8 @@
 
 # Just Code Editor
 
+![Just Code Screenshot](Images/Just_Code.png)
+
 A minimalist code editor for developers who just want to write code, without the visual noise.
 
 ## Philosophy
