@@ -56,6 +56,7 @@ class ConfigLoader:
             'syntax-themes.json',
             'keybindings.json',
             'languages.json',
+            'run-commands.json',
         ]
 
         for filename in config_files:
@@ -149,6 +150,10 @@ class ConfigLoader:
         """Load language-specific configuration."""
         data = self._load_json('languages.json')
         return data.get(language, {})
+
+    def load_run_commands(self) -> Dict[str, str]:
+        """Load run commands for file extensions."""
+        return self._load_json('run-commands.json')
     
     def ensure_config_dir(self):
         """Ensure the user config directory exists."""
@@ -201,8 +206,8 @@ class ConfigLoader:
             'file_browser': asdict(settings.file_browser)
         }
 
-        # Save to default config location (for now)
-        settings_file = self.default_config_dir / 'settings.json'
+        # Save to user config location
+        settings_file = self.config_dir / 'settings.json'
 
         with open(settings_file, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2)
@@ -217,4 +222,5 @@ class ConfigLoader:
         Returns:
             Path to the config file
         """
-        return self.default_config_dir / filename
+        # Return path in user config directory (so it's editable/persistent)
+        return self.config_dir / filename

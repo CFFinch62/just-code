@@ -456,6 +456,11 @@ class MainWindow(QMainWindow):
         open_keybindings_action.triggered.connect(lambda: self._open_config_file("keybindings.json"))
         settings_menu.addAction(open_keybindings_action)
 
+        # Open Run Commands
+        open_run_commands_action = QAction("Open &Run Commands", self)
+        open_run_commands_action.triggered.connect(lambda: self._open_config_file("run-commands.json"))
+        settings_menu.addAction(open_run_commands_action)
+
         settings_menu.addSeparator()
 
         # UI Theme submenu (populated dynamically)
@@ -672,6 +677,7 @@ class MainWindow(QMainWindow):
             "syntax-themes.json",
             "languages.json",
             "keybindings.json",
+            "run-commands.json",
         ]
 
         for filename in config_files:
@@ -845,6 +851,9 @@ class MainWindow(QMainWindow):
         self.current_file = file_path
         if file_path:
             self.setWindowTitle(f"Just Code - {file_path.name}")
+            
+            # Sync terminal directory to file's directory
+            self._sync_terminal_directory(str(file_path.parent))
         else:
             self.setWindowTitle("Just Code")
 
@@ -1087,44 +1096,18 @@ class MainWindow(QMainWindow):
         ext = file_path.suffix.lower()
         filename = file_path.name
 
-        # Map extensions to run commands
-        run_commands = {
-            # Python
-            '.py': f'python3 "{filename}"',
-            '.pyw': f'python3 "{filename}"',
-            # JavaScript/Node
-            '.js': f'node "{filename}"',
-            '.mjs': f'node "{filename}"',
-            # TypeScript (requires ts-node or similar)
-            '.ts': f'npx ts-node "{filename}"',
-            # Shell scripts
-            '.sh': f'bash "{filename}"',
-            '.bash': f'bash "{filename}"',
-            '.zsh': f'zsh "{filename}"',
-            # Ruby
-            '.rb': f'ruby "{filename}"',
-            # PHP
-            '.php': f'php "{filename}"',
-            # Perl
-            '.pl': f'perl "{filename}"',
-            '.pm': f'perl "{filename}"',
-            # Lua
-            '.lua': f'lua "{filename}"',
-            # Go (run directly)
-            '.go': f'go run "{filename}"',
-            # Rust (compile and run)
-            '.rs': f'rustc "{filename}" -o /tmp/rust_out && /tmp/rust_out',
-            # C (compile and run)
-            '.c': f'gcc "{filename}" -o /tmp/c_out && /tmp/c_out',
-            # C++ (compile and run)
-            '.cpp': f'g++ "{filename}" -o /tmp/cpp_out && /tmp/cpp_out',
-            '.cc': f'g++ "{filename}" -o /tmp/cpp_out && /tmp/cpp_out',
-            '.cxx': f'g++ "{filename}" -o /tmp/cpp_out && /tmp/cpp_out',
-            # Java (compile and run)
-            '.java': f'javac "{filename}" && java "{file_path.stem}"',
-        }
+        # Load run commands from config
+        run_commands = self.config_loader.load_run_commands()
 
-        return run_commands.get(ext, '')
+        command = run_commands.get(ext, '')
+        if command:
+            # Substitute variables
+            # {filename} -> full filename
+            # {stem} -> filename without extension
+            command = command.replace('{filename}', filename)
+            command = command.replace('{stem}', file_path.stem)
+            
+        return command
 
     def _show_notification(self, title: str, message: str):
         """Show a simple notification message box."""
