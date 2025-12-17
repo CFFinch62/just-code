@@ -1,156 +1,239 @@
 {
     "python": {
-        "extensions": [".py", ".pyw"],
+        "extensions": [
+            ".py",
+            ".pyw"
+        ],
         "tab_width": 4,
         "use_spaces": true,
         "comment_string": "#",
         "syntax_theme": "default"
     },
     "javascript": {
-        "extensions": [".js", ".mjs", ".cjs"],
+        "extensions": [
+            ".js",
+            ".mjs",
+            ".cjs"
+        ],
         "tab_width": 2,
         "use_spaces": true,
         "comment_string": "//",
         "syntax_theme": "default"
     },
     "typescript": {
-        "extensions": [".ts", ".tsx"],
+        "extensions": [
+            ".ts",
+            ".tsx"
+        ],
         "tab_width": 2,
         "use_spaces": true,
         "comment_string": "//",
         "syntax_theme": "default"
     },
     "json": {
-        "extensions": [".json", ".jsonc"],
+        "extensions": [
+            ".json",
+            ".jsonc"
+        ],
         "tab_width": 2,
         "use_spaces": true,
         "comment_string": null,
         "syntax_theme": "default"
     },
     "html": {
-        "extensions": [".html", ".htm", ".xhtml"],
+        "extensions": [
+            ".html",
+            ".htm",
+            ".xhtml"
+        ],
         "tab_width": 2,
         "use_spaces": true,
         "comment_string": "<!-- -->",
         "syntax_theme": "default"
     },
     "css": {
-        "extensions": [".css", ".scss", ".sass", ".less"],
+        "extensions": [
+            ".css",
+            ".scss",
+            ".sass",
+            ".less"
+        ],
         "tab_width": 2,
         "use_spaces": true,
         "comment_string": "/* */",
         "syntax_theme": "default"
     },
     "java": {
-        "extensions": [".java"],
+        "extensions": [
+            ".java"
+        ],
         "tab_width": 4,
         "use_spaces": true,
         "comment_string": "//",
         "syntax_theme": "default"
     },
     "c": {
-        "extensions": [".c", ".h"],
+        "extensions": [
+            ".c",
+            ".h"
+        ],
         "tab_width": 4,
         "use_spaces": false,
         "comment_string": "//",
         "syntax_theme": "default"
     },
     "cpp": {
-        "extensions": [".cpp", ".cc", ".cxx", ".hpp", ".hh", ".hxx"],
+        "extensions": [
+            ".cpp",
+            ".cc",
+            ".cxx",
+            ".hpp",
+            ".hh",
+            ".hxx"
+        ],
         "tab_width": 4,
         "use_spaces": false,
         "comment_string": "//",
         "syntax_theme": "default"
     },
     "csharp": {
-        "extensions": [".cs"],
+        "extensions": [
+            ".cs"
+        ],
         "tab_width": 4,
         "use_spaces": true,
         "comment_string": "//",
         "syntax_theme": "default"
     },
     "go": {
-        "extensions": [".go"],
+        "extensions": [
+            ".go"
+        ],
         "tab_width": 4,
         "use_spaces": false,
         "comment_string": "//",
         "syntax_theme": "default"
     },
     "rust": {
-        "extensions": [".rs"],
+        "extensions": [
+            ".rs"
+        ],
         "tab_width": 4,
         "use_spaces": true,
         "comment_string": "//",
         "syntax_theme": "default"
     },
     "ruby": {
-        "extensions": [".rb", ".rake", ".gemspec"],
+        "extensions": [
+            ".rb",
+            ".rake",
+            ".gemspec"
+        ],
         "tab_width": 2,
         "use_spaces": true,
         "comment_string": "#",
         "syntax_theme": "default"
     },
     "php": {
-        "extensions": [".php", ".phtml"],
+        "extensions": [
+            ".php",
+            ".phtml"
+        ],
         "tab_width": 4,
         "use_spaces": true,
         "comment_string": "//",
         "syntax_theme": "default"
     },
     "shell": {
-        "extensions": [".sh", ".bash", ".zsh"],
+        "extensions": [
+            ".sh",
+            ".bash",
+            ".zsh"
+        ],
         "tab_width": 4,
         "use_spaces": true,
         "comment_string": "#",
         "syntax_theme": "default"
     },
     "sql": {
-        "extensions": [".sql"],
+        "extensions": [
+            ".sql"
+        ],
         "tab_width": 2,
         "use_spaces": true,
         "comment_string": "--",
         "syntax_theme": "default"
     },
     "yaml": {
-        "extensions": [".yml", ".yaml"],
+        "extensions": [
+            ".yml",
+            ".yaml"
+        ],
         "tab_width": 2,
         "use_spaces": true,
         "comment_string": "#",
         "syntax_theme": "default"
     },
     "markdown": {
-        "extensions": [".md", ".markdown"],
+        "extensions": [
+            ".md",
+            ".markdown"
+        ],
         "tab_width": 2,
         "use_spaces": true,
         "comment_string": null,
         "syntax_theme": "default"
     },
     "xml": {
-        "extensions": [".xml", ".xsl", ".xslt", ".svg"],
+        "extensions": [
+            ".xml",
+            ".xsl",
+            ".xslt",
+            ".svg"
+        ],
         "tab_width": 2,
         "use_spaces": true,
         "comment_string": "<!-- -->",
         "syntax_theme": "default"
     },
     "lua": {
-        "extensions": [".lua"],
+        "extensions": [
+            ".lua"
+        ],
         "tab_width": 2,
         "use_spaces": true,
         "comment_string": "--",
         "syntax_theme": "default"
     },
     "perl": {
-        "extensions": [".pl", ".pm"],
+        "extensions": [
+            ".pl",
+            ".pm"
+        ],
         "tab_width": 4,
         "use_spaces": true,
         "comment_string": "#",
         "syntax_theme": "default"
     },
     "makefile": {
-        "extensions": ["Makefile", ".mk"],
+        "extensions": [
+            "Makefile",
+            ".mk"
+        ],
         "tab_width": 4,
         "use_spaces": false,
         "comment_string": "#",
+        "syntax_theme": "default"
+    },
+    "steps": {
+        "extensions": [
+            ".building",
+            ".floor",
+            ".step"
+        ],
+        "tab_width": 4,
+        "use_spaces": true,
+        "comment_string": "note:",
         "syntax_theme": "default"
     }
 }

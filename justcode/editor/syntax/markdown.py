@@ -5,6 +5,8 @@ from typing import Dict, Optional
 from PyQt6.Qsci import QsciLexerMarkdown
 from PyQt6.QtGui import QColor, QFont
 
+from ...utils import get_monospace_font
+
 
 # Default Markdown syntax colors (dark theme)
 DEFAULT_MARKDOWN_COLORS = {
@@ -52,8 +54,7 @@ class MarkdownLexer(QsciLexerMarkdown):
         if editor:
             font = editor.font()
         else:
-            font = QFont("Monospace", 12)
-            font.setStyleHint(QFont.StyleHint.TypeWriter)
+            font = get_monospace_font(12)
 
         # Set default font for all styles
         for style in range(20):  # QScintilla markdown styles

@@ -85,10 +85,9 @@ class TerminalPanel(QWidget):
         self.output_text.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.output_text.customContextMenuRequested.connect(self._show_context_menu)
 
-        # Set monospace font
-        self.font = QFont("Monospace", 10)
-        self.font.setStyleHint(QFont.StyleHint.TypeWriter)
-        self.font.setFixedPitch(True)
+        # Set monospace font (platform-appropriate)
+        from ..utils import get_monospace_font
+        self.font = get_monospace_font(10)
         self.output_text.setFont(self.font)
 
         # Dark theme

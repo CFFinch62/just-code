@@ -7,6 +7,7 @@ from PyQt6.QtGui import QFont, QColor
 from PyQt6.QtCore import Qt
 
 from ..config import EditorSettings
+from ..utils import get_monospace_font
 
 
 class EditorWidget(QsciScintilla):
@@ -22,10 +23,8 @@ class EditorWidget(QsciScintilla):
     
     def _setup_default_style(self):
         """Set up basic editor styling."""
-        # Use a monospace font - use system default monospace
-        font = QFont("Monospace", 12)
-        font.setStyleHint(QFont.StyleHint.TypeWriter)
-        font.setFixedPitch(True)
+        # Use a platform-appropriate monospace font
+        font = get_monospace_font(12)
         self.setFont(font)
 
         # Basic editor settings
@@ -70,8 +69,16 @@ class EditorWidget(QsciScintilla):
         """
         self._settings = settings
 
-        # Font - ensure it's monospace/fixed pitch
-        font = QFont(settings.font_family, settings.font_size)
+        # Font - use configured font or fallback to platform-appropriate monospace
+        from ..utils import get_monospace_font_family
+        from PyQt6.QtGui import QFontDatabase
+
+        font_family = settings.font_family
+        # Check if configured font exists, otherwise use platform default
+        if font_family not in QFontDatabase.families():
+            font_family = get_monospace_font_family()
+
+        font = QFont(font_family, settings.font_size)
         font.setStyleHint(QFont.StyleHint.TypeWriter)
         font.setFixedPitch(True)
         self.setFont(font)

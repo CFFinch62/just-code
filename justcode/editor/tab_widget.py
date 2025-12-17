@@ -212,6 +212,7 @@ class TabEditorWidget(QTabWidget):
             '.toml': 'TOML',
             '.ini': 'INI', '.cfg': 'Config',
             '.mk': 'Makefile',
+            '.building': 'Steps', '.floor': 'Steps', '.step': 'Steps',
         }
 
         # Check for special filenames
@@ -431,13 +432,21 @@ class TabEditorWidget(QTabWidget):
             from .syntax import PythonLexer
             lexer = PythonLexer(editor, self._syntax_theme, background=bg, foreground=fg)
 
+        # Use our custom Steps language lexer
+        elif ext in ['.building', '.floor', '.step']:
+            from .syntax import StepsLexer
+            lexer = StepsLexer(editor, self._syntax_theme, background=bg, foreground=fg)
+
         # Use QScintilla's built-in lexers for other languages
         else:
             lexer = self._get_builtin_lexer(ext, filename, editor)
 
         if lexer:
-            # Apply basic theming to built-in lexers
-            self._apply_basic_lexer_theme(lexer, bg, fg)
+            # Apply basic theming to built-in lexers only
+            # Custom lexers (PythonLexer, StepsLexer) handle their own theming
+            from .syntax import PythonLexer, StepsLexer
+            if not isinstance(lexer, (PythonLexer, StepsLexer)):
+                self._apply_basic_lexer_theme(lexer, bg, fg)
             editor.setLexer(lexer)
 
     def _get_builtin_lexer(self, ext: str, filename: str, editor):

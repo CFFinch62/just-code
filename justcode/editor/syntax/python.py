@@ -5,6 +5,8 @@ from typing import Dict, Optional
 from PyQt6.Qsci import QsciLexerPython
 from PyQt6.QtGui import QColor, QFont
 
+from ...utils import get_monospace_font
+
 
 # Default syntax colors (VS Code dark theme) - used if no theme provided
 DEFAULT_SYNTAX_COLORS = {
@@ -48,8 +50,7 @@ class PythonLexer(QsciLexerPython):
         if parent:
             font = parent.font()
         else:
-            font = QFont("Monospace", 10)
-            font.setStyleHint(QFont.StyleHint.TypeWriter)
+            font = get_monospace_font(10)
 
         self.setDefaultFont(font)
 
@@ -126,8 +127,7 @@ def create_python_lexer(
     if parent:
         font = parent.font()
     else:
-        font = QFont("Monospace", 10)
-        font.setStyleHint(QFont.StyleHint.TypeWriter)
+        font = get_monospace_font(10)
 
     lexer.setDefaultFont(font)
 
