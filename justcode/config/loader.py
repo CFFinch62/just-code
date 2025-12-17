@@ -88,30 +88,52 @@ class ConfigLoader:
             # Fall back to direct copy if sanitization fails
             shutil.copy2(src, dst)
     
+    def _recursive_update(self, base: Dict[str, Any], update: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Recursively update a dictionary.
+        
+        Args:
+            base: Base dictionary to update
+            update: Dictionary with updates
+            
+        Returns:
+            Updated base dictionary
+        """
+        for key, value in update.items():
+            if isinstance(value, dict) and key in base and isinstance(base[key], dict):
+                self._recursive_update(base[key], value)
+            else:
+                base[key] = value
+        return base
+
     def _load_json(self, filename: str) -> Dict[str, Any]:
         """
         Load a JSON config file.
         
-        Tries user config first, falls back to default config.
+        Loads default config first, then merges user config on top.
         """
-        # Try user config first
+        config = {}
+        
+        # 1. Load default config
+        default_file = self.default_config_dir / filename
+        if default_file.exists():
+            try:
+                with open(default_file, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+            except (json.JSONDecodeError, IOError) as e:
+                print(f"Error loading default config {filename}: {e}")
+        
+        # 2. Load user config and merge
         user_file = self.config_dir / filename
         if user_file.exists():
             try:
                 with open(user_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
+                    user_config = json.load(f)
+                    self._recursive_update(config, user_config)
             except (json.JSONDecodeError, IOError) as e:
                 print(f"Warning: Failed to load user config {filename}: {e}")
-                # Fall through to default
         
-        # Fall back to default config
-        default_file = self.default_config_dir / filename
-        if default_file.exists():
-            with open(default_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        
-        # Return empty dict if neither exists
-        return {}
+        return config
     
     def load_settings(self) -> Settings:
         """Load application settings from settings.json."""

@@ -256,6 +256,7 @@ class TerminalPanel(QWidget):
         # Set working directory
         if self.working_directory:
             self.process.setWorkingDirectory(self.working_directory)
+            self._update_terminal_label(self.working_directory)
 
         # Start the shell
         self.process.start(shell_path, [])
@@ -268,6 +269,16 @@ class TerminalPanel(QWidget):
         """Restart the shell process."""
         self._clear_output()
         self._start_shell()
+
+    def _update_terminal_label(self, path):
+        """Update the terminal label with current directory."""
+        # Shorten path if it's in home directory
+        home = os.path.expanduser("~")
+        display_path = path
+        if path.startswith(home):
+            display_path = "~" + path[len(home):]
+        
+        self.terminal_label.setText(f"Terminal - {display_path}")
 
     def _send_command(self):
         """Send command to the running shell."""
@@ -283,14 +294,36 @@ class TerminalPanel(QWidget):
         self.command_input.clear()
 
         if self.process.state() == QProcess.ProcessState.Running:
-            # Send command to shell
-            self.process.write((command + "\n").encode())
+            # Send command to shell with directory tracking
+            # We append a hidden echo command that prints the new directory with a marker
+            full_command = f'{command}; echo -e "\\n___JC_PWD:$PWD"'
+            self.process.write((full_command + "\n").encode())
         else:
             self._append_output("Shell not running. Click 'Restart' to start.", color="#ff6b6b")
 
     def _handle_stdout(self):
         """Handle standard output from process."""
         data = self.process.readAllStandardOutput().data().decode('utf-8', errors='replace')
+        
+        # Check for directory marker
+        if "___JC_PWD:" in data:
+            lines = data.split('\n')
+            clean_lines = []
+            for line in lines:
+                if "___JC_PWD:" in line:
+                    try:
+                        # Extract directory
+                        pwd_part = line.split("___JC_PWD:")[1].strip()
+                        self.working_directory = pwd_part
+                        self._update_terminal_label(self.working_directory)
+                        # Show confirmation in terminal body to match file browser behavior
+                        self._append_output(f"Changed directory to: {self.working_directory}", color="#6a9955")
+                    except IndexError:
+                        pass
+                else:
+                    clean_lines.append(line)
+            data = '\n'.join(clean_lines)
+
         # Strip ANSI escape codes
         clean_data = self.ANSI_ESCAPE.sub('', data)
         self._append_output_raw(clean_data)
@@ -399,6 +432,9 @@ class TerminalPanel(QWidget):
             # Change directory in the running shell
             self.process.write(f'cd "{directory}"\n'.encode())
             self._append_output(f"Changed directory to: {directory}", color="#6a9955")
+        
+        # Always update the label
+        self._update_terminal_label(directory)
 
     def execute_command(self, command: str, show_command: bool = True):
         """

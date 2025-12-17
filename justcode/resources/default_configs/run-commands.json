@@ -21,6 +21,6 @@
     ".cc": "g++ \"{filename}\" -o /tmp/cpp_out && /tmp/cpp_out",
     ".cxx": "g++ \"{filename}\" -o /tmp/cpp_out && /tmp/cpp_out",
     ".java": "javac \"{filename}\" && java \"{stem}\"",
-    ".building":"python -m /home/chuck/Dropbox/Programming/Languages_and_Code/Programming_Projects/Programming_Tools/Steps/steps/main run . ",
-    ".step":"python -m /home/chuck/Dropbox/Programming/Languages_and_Code/Programming_Projects/Programming_Tools/Steps/steps/main run . "
+    ".building":"python3 -m /home/chuck/Dropbox/Programming/Languages_and_Code/Programming_Projects/Programming_Tools/Steps/steps/main.py run . ",
+    ".step":"python3 -m /home/chuck/Dropbox/Programming/Languages_and_Code/Programming_Projects/Programming_Tools/Steps/steps/main.py run . "
 }

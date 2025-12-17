@@ -668,7 +668,8 @@ class MainWindow(QMainWindow):
         self.config_watcher = QFileSystemWatcher(self)
 
         # Get path to config directory
-        config_dir = self.config_loader.get_config_file_path("").parent
+        # get_config_file_path("") returns the config dir itself
+        config_dir = self.config_loader.get_config_file_path("")
 
         # Watch config files
         config_files = [
@@ -991,22 +992,17 @@ class MainWindow(QMainWindow):
 
     def _open_config_file(self, filename: str):
         """
-        Open a config file in the editor.
+        Open a config file in the editor (User Config).
 
         Args:
             filename: Name of the config file (e.g., 'settings.json')
         """
-        # Config files are in resources/default_configs/
-        config_path = Path(__file__).parent.parent / "resources" / "default_configs" / filename
+        # Get path to user config file
+        config_path = self.config_loader.get_config_file_path(filename)
 
         if config_path.exists():
             self._load_file(str(config_path))
-        else:
-            QMessageBox.warning(
-                self,
-                "Config File Not Found",
-                f"Could not find config file at:\n{config_path}"
-            )
+
 
     def _toggle_file_browser(self):
         """Toggle the file browser panel visibility."""
